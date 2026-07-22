@@ -9,6 +9,9 @@ struct Claims {
 }
 
 pub fn parse_jwt_expiration(token: &str) -> Option<DateTime<Utc>> {
+    #[cfg(test)]
+    crate::test_support::ensure_jsonwebtoken_crypto();
+
     jsonwebtoken::dangerous::insecure_decode::<Claims>(token)
         .ok()
         .and_then(|data| data.claims.exp)
@@ -16,6 +19,9 @@ pub fn parse_jwt_expiration(token: &str) -> Option<DateTime<Utc>> {
 }
 
 pub fn is_jwt_expired_or_near(token: &str, threshold: Duration) -> bool {
+    #[cfg(test)]
+    crate::test_support::ensure_jsonwebtoken_crypto();
+
     parse_jwt_expiration(token)
         .map(|exp| exp <= Utc::now() + threshold)
         .unwrap_or(false)
