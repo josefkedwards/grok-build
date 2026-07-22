@@ -28,3 +28,20 @@ pub(crate) fn ensure_hermetic_git_on_path() {
         }
     });
 }
+
+/// Install the process-level `jsonwebtoken` CryptoProvider (rust_crypto).
+///
+/// jsonwebtoken 10.x requires exactly one of `rust_crypto` / `aws_lc_rs` to be
+/// selected *and* the process default to be installed. In the workspace test
+/// harness the auto-detection can fail, producing panics on first decode.
+///
+/// Safe to call from any test; uses `Once` so it runs at most once per process.
+pub(crate) fn ensure_jsonwebtoken_crypto() {
+    use std::sync::Once;
+    static INIT: Once = Once::new();
+    INIT.call_once(|| {
+        // We already enable the `rust_crypto` feature on the dependency.
+        // Explicitly install it so the process-level default is set.
+        let _ = jsonwebtoken::crypto::rust_crypto::CryptoProvider::install_default();
+    });
+}
