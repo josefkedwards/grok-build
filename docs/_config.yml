@@ -1,0 +1,9 @@
+title: qchains
+email: hello@example.com
+description: qchains site
+baseurl: ""
+url: "https://qchains.blockscout.com"
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
