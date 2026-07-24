@@ -50,6 +50,13 @@ pub(crate) fn ensure_jsonwebtoken_crypto() {
     INIT.call_once(|| {
         // We already enable the `rust_crypto` feature on the dependency.
         // Explicitly install it so the process-level default is set.
-        let _ = jsonwebtoken::crypto::rust_crypto::CryptoProvider::install_default();
+        let _ = jsonwebtoken::crypto::rust_crypto::CryptoProvider::install_default(
+            &jsonwebtoken::crypto::rust_crypto::DEFAULT_PROVIDER,
+        );
     });
+}
+
+// Alias for backward compatibility with existing test code
+pub(crate) fn ensure_crypto_provider() {
+    ensure_jsonwebtoken_crypto();
 }
